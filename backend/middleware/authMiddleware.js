@@ -1,5 +1,5 @@
-import User from '../models/userModel.js';
-import jwt from 'jsonwebtoken';
+import User from "../models/userModel.js";
+import jwt from "jsonwebtoken";
 
 // Middleware to protect routes by verifying JWT authentication token.
 const protect = async (req, res, next) => {
@@ -8,17 +8,20 @@ const protect = async (req, res, next) => {
 
     if (!token) {
       res.statusCode = 401;
-      throw new Error('Authentication failed: Token not provided.');
+      throw new Error("Authentication failed: Token not provided.");
     }
 
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedToken = jwt.verify(
+      token,
+      "e9b8d1c44adf478ca9d1a264f5f9f9b5ae9f72ef0c6cf0f567b1d6c4f72861b2"
+    );
 
     if (!decodedToken) {
       res.statusCode = 401;
-      throw new Error('Authentication failed: Invalid token.');
+      throw new Error("Authentication failed: Invalid token.");
     }
 
-    req.user = await User.findById(decodedToken.userId).select('-password');
+    req.user = await User.findById(decodedToken.userId).select("-password");
 
     next();
   } catch (error) {
@@ -31,7 +34,7 @@ const admin = (req, res, next) => {
   try {
     if (!req.user || !req.user.isAdmin) {
       res.statusCode = 401;
-      throw new Error('Authorization failed: Not authorized as an admin.');
+      throw new Error("Authorization failed: Not authorized as an admin.");
     }
     next();
   } catch (error) {
